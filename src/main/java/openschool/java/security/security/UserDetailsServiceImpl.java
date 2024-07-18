@@ -1,9 +1,10 @@
 package openschool.java.security.security;
 
 import lombok.RequiredArgsConstructor;
-import openschool.java.security.user.service.UserFindUseCase;
+import openschool.java.security.user.domain.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 /**
@@ -13,7 +14,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class UserDetailsServiceImpl implements UserDetailsService {
 
-    private final UserFindUseCase userFindUseCase;
+    private final UserRepository userRepository;
 
     /**
      * Получить данные о пользователе по его username.
@@ -23,6 +24,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
      */
     @Override
     public UserDetails loadUserByUsername(String username) {
-        return userFindUseCase.findUserByUsername(username);
+        return userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException(username));
     }
 }
