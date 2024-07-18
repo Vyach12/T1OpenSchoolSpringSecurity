@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import openschool.java.security.user.domain.UserEntity;
 import openschool.java.security.user.dto.UserTo;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 
 /**
  * Маппер для пользователей.
