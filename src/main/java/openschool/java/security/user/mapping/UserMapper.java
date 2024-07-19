@@ -46,7 +46,6 @@ public abstract class UserMapper {
      * @return сущность UserEntity с проставленными полями
      */
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "role", ignore = true)
     @Mapping(target = "accountNonExpired", ignore = true)
     @Mapping(target = "accountNonLocked", ignore = true)
     @Mapping(target = "credentialsNonExpired", ignore = true)
