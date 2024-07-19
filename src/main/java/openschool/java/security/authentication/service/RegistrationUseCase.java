@@ -2,7 +2,7 @@ package openschool.java.security.authentication.service;
 
 import lombok.RequiredArgsConstructor;
 import openschool.java.security.authentication.dto.AuthenticationOperationResultTo;
-import openschool.java.security.authentication.exception.UserAlreadyExistsException;
+import openschool.java.security.exception.auth.UserAlreadyExistsException;
 import openschool.java.security.security.jwt.JwtTokenGenerator;
 import openschool.java.security.user.domain.UserEntity;
 import openschool.java.security.user.domain.UserRepository;

@@ -3,6 +3,7 @@ package openschool.java.security.security.config;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import openschool.java.security.security.UserDetailsServiceImpl;
+import openschool.java.security.security.filter.ExceptionHandlerFilter;
 import openschool.java.security.security.filter.JwtAuthenticationFilter;
 import openschool.java.security.user.domain.UserEntity;
 import openschool.java.security.user.domain.UserRole;
@@ -16,7 +17,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -38,7 +38,7 @@ public class SecurityConfiguration {
      */
     @Bean
     public UserDetailsService userDetailsService() {
-        UserDetails user = UserEntity.builder()
+        UserEntity user = UserEntity.builder()
                 .username("admin")
                 .password(passwordEncoder().encode("admin"))
                 .role(UserRole.ADMIN)
@@ -50,6 +50,11 @@ public class SecurityConfiguration {
      * Фильтр JWT-аутентификации.
      */
     private final JwtAuthenticationFilter authenticationFilter;
+
+    /**
+     * Фильтр для обработки исключений.
+     */
+    private final ExceptionHandlerFilter exceptionHandlerFilter;
 
     /**
      * Класс для получения данных о пользователях.
@@ -66,17 +71,19 @@ public class SecurityConfiguration {
     @SneakyThrows
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) {
         return httpSecurity
-            .csrf(AbstractHttpConfigurer::disable)
-            .authorizeHttpRequests(registry -> registry
-                .requestMatchers("/api/v1/auth/**", "/api/v1/user/**", "/swagger-ui/**")
-                .permitAll()
-                .anyRequest()
-                .authenticated())
-            .sessionManagement(configurer -> configurer
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .authenticationProvider(authenticationProvider())
-            .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class)
-            .build();
+                .csrf(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests(registry -> registry
+                        .requestMatchers("/api/v1/auth/**", "/swagger-ui/**")
+                        .permitAll()
+                        .requestMatchers("api/v1/admin/**").hasRole(UserRole.ADMIN.name())
+                        .anyRequest()
+                        .authenticated())
+                .sessionManagement(configurer -> configurer
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authenticationProvider(authenticationProvider())
+                .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(exceptionHandlerFilter, JwtAuthenticationFilter.class)
+                .build();
     }
 
     /**

@@ -39,11 +39,13 @@ public final class UserEntity implements UserDetails {
     /**
      * Уникальное имя пользователя.
      */
+    @Column(unique = true, nullable = false)
     private String username;
 
     /**
      * Хэшированный пароль.
      */
+    @Column(nullable = false)
     private String password;
 
     /**

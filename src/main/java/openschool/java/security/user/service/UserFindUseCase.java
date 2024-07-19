@@ -3,14 +3,12 @@ package openschool.java.security.user.service;
 import lombok.RequiredArgsConstructor;
 import openschool.java.security.user.domain.UserRepository;
 import openschool.java.security.user.dto.UserTo;
-import openschool.java.security.user.exception.UserNotFoundException;
+import openschool.java.security.exception.user.UserNotFoundException;
 import openschool.java.security.user.mapping.UserMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Set;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -44,14 +42,13 @@ public class UserFindUseCase {
     }
 
     /**
-     * Получение списка пользователей по идентификаторам.
+     * Получение списка всех пользователей.
      *
-     * @param ids - идентификаторы пользователей, которых мы ищем
      * @return to-модели найденных пользователей
      */
-    public List<UserTo> findUsersByIds(final Set<UUID> ids) {
-        return userRepository.findAllById(ids).stream()
-            .map(userMapper::mapFromEntity)
-            .collect(Collectors.toList());
+    public List<UserTo> findAll() {
+        return userRepository.findAll().stream()
+                .map(userMapper::mapFromEntity)
+                .collect(Collectors.toList());
     }
 }

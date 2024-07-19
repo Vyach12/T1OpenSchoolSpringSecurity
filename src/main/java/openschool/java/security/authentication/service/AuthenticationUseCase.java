@@ -2,11 +2,11 @@ package openschool.java.security.authentication.service;
 
 import lombok.RequiredArgsConstructor;
 import openschool.java.security.authentication.dto.AuthenticationOperationResultTo;
-import openschool.java.security.authentication.exception.InvalidUsernameOrPasswordException;
+import openschool.java.security.exception.auth.InvalidUsernameOrPasswordException;
 import openschool.java.security.security.jwt.JwtTokenGenerator;
 import openschool.java.security.user.domain.UserRepository;
 import openschool.java.security.user.dto.UserTo;
-import openschool.java.security.user.exception.UserNotFoundException;
+import openschool.java.security.exception.user.UserNotFoundException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;

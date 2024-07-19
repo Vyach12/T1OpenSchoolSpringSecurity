@@ -1,4 +1,4 @@
-package openschool.java.security.user.exception;
+package openschool.java.security.exception.user;
 
 public class UserNotFoundException extends RuntimeException {
     public UserNotFoundException(String message) {
