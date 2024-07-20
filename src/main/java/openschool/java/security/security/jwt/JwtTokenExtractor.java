@@ -66,11 +66,11 @@ public class JwtTokenExtractor {
      */
     private Claims extractAllClaims(final String token) {
         return Jwts
-            .parserBuilder()
-            .setSigningKey(getSigningKey())
-            .build()
-            .parseClaimsJws(token)
-            .getBody();
+                .parserBuilder()
+                .setSigningKey(getSigningKey())
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
     }
 
     /**

@@ -83,7 +83,7 @@ public class JwtTokenGenerator {
     /**
      * Сгенерировать токен.
      *
-     * @param claims      - claims
+     * @param claims     - claims
      * @param userEntity - данные пользователя
      * @return токен
      */
@@ -91,14 +91,14 @@ public class JwtTokenGenerator {
                                  final UserEntity userEntity,
                                  long expirationTimeSeconds) {
         return Jwts
-            .builder()
-            .setClaims(claims)
-            .setSubject(userEntity.getUsername())
-            .setIssuedAt(new Date(System.currentTimeMillis()))
-            .setExpiration(new Date(System.currentTimeMillis()
-                + TimeUnit.SECONDS.toMillis(expirationTimeSeconds)))
-            .signWith(getSigningKey(), SignatureAlgorithm.HS256)
-            .compact();
+                .builder()
+                .setClaims(claims)
+                .setSubject(userEntity.getUsername())
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis()
+                        + TimeUnit.SECONDS.toMillis(expirationTimeSeconds)))
+                .signWith(getSigningKey(), SignatureAlgorithm.HS256)
+                .compact();
     }
 
     /**

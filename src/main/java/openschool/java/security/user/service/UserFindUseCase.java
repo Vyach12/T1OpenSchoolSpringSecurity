@@ -1,9 +1,9 @@
 package openschool.java.security.user.service;
 
 import lombok.RequiredArgsConstructor;
+import openschool.java.security.exception.user.UserNotFoundException;
 import openschool.java.security.user.domain.UserRepository;
 import openschool.java.security.user.dto.UserTo;
-import openschool.java.security.exception.user.UserNotFoundException;
 import openschool.java.security.user.mapping.UserMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,9 +36,9 @@ public class UserFindUseCase {
     @Transactional(readOnly = true)
     public UserTo findUserByUsername(final String username) {
         return userRepository.findByUsername(username)
-            .map(userMapper::mapFromEntity)
-            .orElseThrow(() -> new UserNotFoundException(
-                    String.format("Пользователь с username %s не найден", username)));
+                .map(userMapper::mapFromEntity)
+                .orElseThrow(() -> new UserNotFoundException(
+                        String.format("Пользователь с username %s не найден", username)));
     }
 
     /**
