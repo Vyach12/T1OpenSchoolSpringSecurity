@@ -5,8 +5,9 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
+import openschool.java.security.user.domain.UserEntity;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Service;
 
 import java.security.Key;
@@ -21,10 +22,16 @@ import java.util.concurrent.TimeUnit;
 @RequiredArgsConstructor
 public class JwtTokenGenerator {
     /**
-     * Время действия токена в секундах.
+     * Время действия access токена в секундах.
      */
     @Value("${jwt.expiration-time-seconds}")
-    private Long expirationTimeSeconds;
+    private Long accessTokenExpirationTimeSeconds;
+
+    /**
+     * Время действия refresh токена в секундах.
+     */
+    @Value("${jwt.refresh.expiration-time-seconds}")
+    private Long refreshTokenExpirationTimeSeconds;
 
     /**
      * Секретный ключ.
@@ -33,28 +40,60 @@ public class JwtTokenGenerator {
     private String secret;
 
     /**
-     * Сгенерировать токен для пользователя.
+     * Наименование refresh токена для cookie.
+     */
+    @Value("${jwt.refresh.name}")
+    private String refreshTokenNameCookie;
+
+    /**
+     * Метод для генерации нового access-токена.
      *
-     * @param userDetails - данные пользователя
+     * @param userEntity - данные пользователя
      * @return токен
      */
-    public String generate(final UserDetails userDetails) {
-        return generateToken(Map.of(), userDetails);
+    public String generate(final UserEntity userEntity) {
+        return generateToken(Map.of(), userEntity, accessTokenExpirationTimeSeconds);
+    }
+
+    /**
+     * Метод для генерации нового refresh-токена.
+     *
+     * @param userEntity - данные пользователя
+     * @return сгенерированный refresh-токен
+     */
+    public String generateRefreshToken(final UserEntity userEntity) {
+        return generateToken(Map.of(), userEntity, refreshTokenExpirationTimeSeconds);
+    }
+
+    /**
+     * Метод для создания куки с refresh-токеном.
+     *
+     * @param refreshToken - значение refresh-токена
+     * @return созданная куки
+     */
+    public ResponseCookie createRefreshTokenCookie(String refreshToken) {
+        return ResponseCookie.from(refreshTokenNameCookie, refreshToken)
+                .httpOnly(true)
+                .maxAge(refreshTokenExpirationTimeSeconds)
+                .secure(true)
+                .path("/api/v1/auth")
+                .build();
     }
 
     /**
      * Сгенерировать токен.
      *
      * @param claims      - claims
-     * @param userDetails - данные пользователя
+     * @param userEntity - данные пользователя
      * @return токен
      */
     private String generateToken(final Map<String, Object> claims,
-                                 final UserDetails userDetails) {
+                                 final UserEntity userEntity,
+                                 long expirationTimeSeconds) {
         return Jwts
             .builder()
             .setClaims(claims)
-            .setSubject(userDetails.getUsername())
+            .setSubject(userEntity.getUsername())
             .setIssuedAt(new Date(System.currentTimeMillis()))
             .setExpiration(new Date(System.currentTimeMillis()
                 + TimeUnit.SECONDS.toMillis(expirationTimeSeconds)))

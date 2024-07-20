@@ -42,7 +42,8 @@ public class UserTo implements UserDetails {
     /**
      * Роль.
      */
-    private UserRole role;
+    @Builder.Default
+    private UserRole role = UserRole.USER;
 
     /**
      * Имя.

@@ -25,12 +25,12 @@ public class JwtTokenExtractor {
     private String secret;
 
     /**
-     * Извлечь username из токена.
+     * Извлечь subject из токена.
      *
      * @param token - токен
-     * @return username
+     * @return subject
      */
-    public String extractUsername(final String token) {
+    public String extractSubject(final String token) {
         return extractClaim(token, Claims::getSubject);
     }
 

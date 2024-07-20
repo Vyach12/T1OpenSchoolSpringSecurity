@@ -26,7 +26,7 @@ public class JwtTokenValidator {
      */
     public boolean isValid(final String token,
                            final UserDetails userDetails) {
-        String extractedUsername = extractor.extractUsername(token);
+        String extractedUsername = extractor.extractSubject(token);
         return extractedUsername.equals(userDetails.getUsername()) && !isTokenExpired(token);
     }
 
